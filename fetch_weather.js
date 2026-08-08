@@ -1,10 +1,9 @@
 const axios = require('axios');
 const fs = require('fs');
 const lunar = require('lunar-javascript');
-
-// ========== 配置 ==========
-const LAT = 34.42;
-const LON = 112.43;
+// 伊川县西仓村坐标
+const LAT = 34.43304;   // 纬度
+const LON = 112.413687; // 经度
 const CITY = '伊川县';
 const TIMEZONE = 'Asia/Shanghai';
 
