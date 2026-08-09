@@ -2,7 +2,7 @@ name: 每日天气归档
 
 on:
   schedule:
-    - cron: '0 16 * * *'  # UTC 16:00 = 北京时间次日0点
+    - cron: '0 22 * * *'  # UTC 16:00 = 北京时间次日0点
   workflow_dispatch:      # 允许手动触发
 
 jobs:
