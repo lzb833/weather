@@ -2,12 +2,15 @@ name: 每日天气归档
 
 on:
   schedule:
-    - cron: '0 22 * * *'  # UTC 16:00 = 北京时间次日0点
-  workflow_dispatch:      # 允许手动触发
+    - cron: '0 22 * * *'  # UTC 22:00 = 北京时间 06:00
+  workflow_dispatch:
 
 jobs:
   archive:
     runs-on: ubuntu-latest
+    # 关键修复：在这里明确授予写入权限
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v4
       
