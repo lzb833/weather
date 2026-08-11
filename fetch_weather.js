@@ -1,10 +1,11 @@
 const axios = require('axios');
 const fs = require('fs');
 const lunar = require('lunar-javascript');
-// 伊川县西仓村坐标
-const LAT = 34.43304;   // 纬度
-const LON = 112.413687; // 经度
-const CITY = '伊川县';
+
+// ========== 配置 ==========
+const LAT = 34.43304;
+const LON = 112.413687;
+const CITY = '伊川县西仓村';
 const TIMEZONE = 'Asia/Shanghai';
 
 // 天气代码 → 中文描述映射
@@ -22,10 +23,12 @@ const WEATHER_MAP = {
   95: '雷暴', 96: '雷暴加冰雹', 99: '强雷暴加冰雹'
 };
 
-function getYesterday() {
+// ========== 工具函数 ==========
+// 获取今天的日期（强制使用北京时间）
+function getToday() {
   const d = new Date();
-  d.setDate(d.getDate() - 1);
-  return d;
+  const beijingDate = new Date(d.toLocaleString('en-US', { timeZone: 'Asia/Shanghai' }));
+  return beijingDate;
 }
 
 function formatDate(date) {
@@ -35,33 +38,33 @@ function formatDate(date) {
   return `${y}-${m}-${d}`;
 }
 
-// ========== 修复后的农历函数 ==========
 function getLunarDate(date) {
   const solar = lunar.Solar.fromDate(date);
   const lunarObj = solar.getLunar();
   const month = lunarObj.getMonthInChinese();
   const day = lunarObj.getDayInChinese();
-  // 直接返回，不加闰月判断
   return `${month}月${day}`;
 }
 
-function isTodayRecorded(yesterdayStr) {
+function isTodayRecorded(dateStr) {
   if (!fs.existsSync('weather.csv')) return false;
   const content = fs.readFileSync('weather.csv', 'utf-8');
   const lines = content.split('\n');
   if (lines.length < 2) return false;
   const lastLine = lines[lines.length - 2];
-  return lastLine.startsWith(yesterdayStr);
+  return lastLine.startsWith(dateStr);
 }
 
 function weatherCodeToText(code) {
   return WEATHER_MAP[code] || `未知(${code})`;
 }
 
+// ========== 主函数 ==========
 async function main() {
-  const yesterday = getYesterday();
-  const dateStr = formatDate(yesterday);
+  const today = getToday();
+  const dateStr = formatDate(today);
   
+  // 检查是否已记录
   if (isTodayRecorded(dateStr)) {
     console.log(`✅ ${dateStr} 已存在，跳过`);
     return;
@@ -70,25 +73,26 @@ async function main() {
   console.log(`📡 正在从 Open-Meteo 抓取 ${dateStr} 的天气数据...`);
   
   try {
-    // 历史数据
-    const historyUrl = `https://archive-api.open-meteo.com/v1/archive?latitude=${LAT}&longitude=${LON}&start_date=${dateStr}&end_date=${dateStr}&daily=temperature_2m_max,temperature_2m_min,sunrise,sunset,precipitation_sum,wind_speed_10m_max,relative_humidity_2m_mean,pressure_msl_mean&timezone=${TIMEZONE}`;
-    const historyRes = await axios.get(historyUrl);
-    const historyData = historyRes.data;
+    // ----- 1. 获取预报数据（今天） -----
+    const forecastUrl = `https://api.open-meteo.com/v1/forecast?latitude=${LAT}&longitude=${LON}&daily=temperature_2m_max,temperature_2m_min,sunrise,sunset,precipitation_sum,wind_speed_10m_max,relative_humidity_2m_mean,pressure_msl_mean&timezone=${TIMEZONE}&forecast_days=1`;
     
-    if (!historyData.daily || !historyData.daily.time || historyData.daily.time.length === 0) {
-      throw new Error('历史API返回数据为空');
+    const forecastRes = await axios.get(forecastUrl);
+    const forecastData = forecastRes.data;
+    
+    if (!forecastData.daily || !forecastData.daily.time || forecastData.daily.time.length === 0) {
+      throw new Error('预报API返回数据为空');
     }
     
-    const daily = historyData.daily;
+    const daily = forecastData.daily;
     
-    // 天气状况
+    // ----- 2. 获取天气状况 -----
     let weatherText = '获取中';
     try {
-      const forecastUrl = `https://api.open-meteo.com/v1/forecast?latitude=${LAT}&longitude=${LON}&past_days=1&daily=weathercode&timezone=${TIMEZONE}`;
-      const forecastRes = await axios.get(forecastUrl);
-      const forecastData = forecastRes.data;
-      if (forecastData.daily && forecastData.daily.weathercode && forecastData.daily.weathercode.length > 0) {
-        const weatherCode = forecastData.daily.weathercode[forecastData.daily.weathercode.length - 1];
+      const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${LAT}&longitude=${LON}&daily=weathercode&timezone=${TIMEZONE}&forecast_days=1`;
+      const weatherRes = await axios.get(weatherUrl);
+      const weatherData = weatherRes.data;
+      if (weatherData.daily && weatherData.daily.weathercode && weatherData.daily.weathercode.length > 0) {
+        const weatherCode = weatherData.daily.weathercode[0];
         weatherText = weatherCodeToText(weatherCode);
         console.log(`  天气状况: ${weatherText} (代码 ${weatherCode})`);
       }
@@ -96,10 +100,10 @@ async function main() {
       console.warn('  获取天气状况失败:', weatherErr.message);
     }
     
-    // 农历
-    const lunarDate = getLunarDate(yesterday);
+    // ----- 3. 获取农历 -----
+    const lunarDate = getLunarDate(today);
     
-    // 组装记录
+    // ----- 4. 组装记录 -----
     const record = {
       date: daily.time[0],
       lunar: lunarDate,
@@ -115,7 +119,7 @@ async function main() {
       pressure: daily.pressure_msl_mean[0] ?? '-'
     };
     
-    // 写入CSV
+    // ----- 5. 写入CSV -----
     const line = [
       record.date, record.lunar, record.city,
       record.maxTemp, record.minTemp,
