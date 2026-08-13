@@ -5,11 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>伊川县每日天气记录</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        /* ===== 样式保持你原来的 ===== */
+        * { margin:0; padding:0; box-sizing:border-box; }
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", sans-serif;
             background: #f0f4f8;
@@ -60,17 +57,9 @@
             cursor: pointer;
             transition: background 0.2s;
         }
-        .subtitle .refresh-btn:hover {
-            background: #2563eb;
-        }
-        .subtitle .refresh-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-        .table-wrapper {
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-        }
+        .subtitle .refresh-btn:hover { background: #2563eb; }
+        .subtitle .refresh-btn:disabled { opacity:0.5; cursor:not-allowed; }
+        .table-wrapper { overflow-x: auto; -webkit-overflow-scrolling: touch; }
         table {
             width: 100%;
             border-collapse: collapse;
@@ -95,9 +84,7 @@
             color: #2d3748;
             white-space: nowrap;
         }
-        tbody tr:hover {
-            background: #f8fafc;
-        }
+        tbody tr:hover { background: #f8fafc; }
         .weather-tag {
             display: inline-block;
             padding: 2px 12px;
@@ -111,64 +98,28 @@
         .weather-tag.snowy { background: #e0e7ff; color: #3730a3; }
         .weather-tag.foggy { background: #cbd5e1; color: #475569; }
         .weather-tag.thunder { background: #fca5a5; color: #7f1d1d; }
-        
-        .loading {
-            text-align: center;
-            padding: 60px 20px;
-            color: #7a8a9e;
-        }
+        .loading { text-align:center; padding:60px 20px; color:#7a8a9e; }
         .loading .spinner {
-            display: inline-block;
-            width: 24px;
-            height: 24px;
-            margin-right: 10px;
-            border: 3px solid #e2e8f0;
-            border-top-color: #3b82f6;
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-            vertical-align: middle;
+            display:inline-block; width:24px; height:24px; margin-right:10px;
+            border:3px solid #e2e8f0; border-top-color:#3b82f6; border-radius:50%;
+            animation: spin 0.8s linear infinite; vertical-align:middle;
         }
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
+        @keyframes spin { to { transform:rotate(360deg); } }
         .stats {
-            margin-top: 20px;
-            padding-top: 16px;
-            border-top: 1px solid #eef2f6;
-            font-size: 13px;
-            color: #7a8a9e;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
+            margin-top:20px; padding-top:16px; border-top:1px solid #eef2f6;
+            font-size:13px; color:#7a8a9e;
+            display:flex; flex-wrap:wrap; gap:20px;
         }
-        .stats span {
-            background: #f8fafc;
-            padding: 4px 12px;
-            border-radius: 6px;
-        }
-        .empty {
-            text-align: center;
-            padding: 60px 20px;
-            color: #7a8a9e;
-        }
-        .empty .icon {
-            font-size: 48px;
-            margin-bottom: 12px;
-        }
-        .error {
-            text-align: center;
-            padding: 40px 20px;
-            color: #dc2626;
-        }
-        .error .icon {
-            font-size: 36px;
-            margin-bottom: 8px;
-        }
-        @media (max-width: 600px) {
-            .container { padding: 16px 12px; }
-            h1 { font-size: 18px; }
-            th, td { font-size: 12px; padding: 8px 6px; }
-            .subtitle { flex-direction: column; gap: 10px; align-items: stretch; }
+        .stats span { background:#f8fafc; padding:4px 12px; border-radius:6px; }
+        .empty { text-align:center; padding:60px 20px; color:#7a8a9e; }
+        .empty .icon { font-size:48px; margin-bottom:12px; }
+        .error { text-align:center; padding:40px 20px; color:#dc2626; }
+        .error .icon { font-size:36px; margin-bottom:8px; }
+        @media (max-width:600px) {
+            .container { padding:16px 12px; }
+            h1 { font-size:18px; }
+            th, td { font-size:12px; padding:8px 6px; }
+            .subtitle { flex-direction:column; gap:10px; align-items:stretch; }
         }
     </style>
 </head>
@@ -182,7 +133,6 @@
         <span>数据来源：<a href="https://open-meteo.com" target="_blank" style="color:#3b82f6;text-decoration:none;">Open-Meteo</a> · 每日凌晨自动归档</span>
         <button class="refresh-btn" id="refreshBtn">🔄 刷新数据</button>
     </div>
-    
     <div class="table-wrapper">
         <table>
             <thead>
@@ -206,7 +156,6 @@
             </tbody>
         </table>
     </div>
-    
     <div class="stats" id="stats"></div>
 </div>
 
@@ -214,35 +163,17 @@
 // ============================================================
 // 配置：修改这里指向你的CSV文件地址
 // ============================================================
-// 方式1（推荐）：如果你的网页空间和CSV在同一目录，用相对路径
-const DATA_URL = 'weather.csv';
-
-// 方式2：如果用GitHub Pages托管CSV，用下面这个格式
-// const DATA_URL = 'https://你的用户名.github.io/你的仓库名/weather.csv';
-
-// 方式3：如果用GitHub raw（可能有跨域问题，不推荐）
-// const DATA_URL = 'https://raw.githubusercontent.com/你的用户名/你的仓库名/main/weather.csv';
+const DATA_URL = 'weather.csv'; // 如果和HTML同一目录，保持这个相对路径
+// 如果用GitHub Pages，也可以用：https://lzb833.github.io/weather/weather.csv
 // ============================================================
 
-// 天气代码 → CSS类名映射（用于显示不同颜色）
+// 天气代码 → CSS类名映射
 const WEATHER_CLASS_MAP = {
-    '晴': 'sunny',
-    '晴间多云': 'sunny',
-    '多云': 'cloudy',
-    '阴': 'cloudy',
-    '雾': 'foggy',
-    '毛毛雨': 'rainy',
-    '小雨': 'rainy',
-    '中雨': 'rainy',
-    '大雨': 'rainy',
-    '阵雨': 'rainy',
-    '雷暴': 'thunder',
-    '雷暴加冰雹': 'thunder',
-    '小雪': 'snowy',
-    '中雪': 'snowy',
-    '大雪': 'snowy'
+    '晴': 'sunny', '晴间多云': 'sunny', '多云': 'cloudy', '阴': 'cloudy',
+    '雾': 'foggy', '毛毛雨': 'rainy', '小雨': 'rainy', '中雨': 'rainy',
+    '大雨': 'rainy', '阵雨': 'rainy', '雷暴': 'thunder', '雷暴加冰雹': 'thunder',
+    '小雪': 'snowy', '中雪': 'snowy', '大雪': 'snowy'
 };
-
 function getWeatherClass(text) {
     if (!text) return 'cloudy';
     for (const [key, cls] of Object.entries(WEATHER_CLASS_MAP)) {
@@ -251,14 +182,25 @@ function getWeatherClass(text) {
     return 'cloudy';
 }
 
+// ===== 主数据加载函数 =====
 async function fetchWeatherData() {
     try {
-        const response = await fetch(DATA_URL, {
-            cache: 'no-cache'  // 防止缓存
-        });
+        const response = await fetch(DATA_URL, { cache: 'no-cache' });
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
         const text = await response.text();
-        return parseCSV(text);
+        // 提取文件最后修改时间（关键修改点）
+        const lastModified = response.headers.get('last-modified');
+        let updateTimeStr = '未知时间';
+        if (lastModified) {
+            // 将服务器返回的GMT时间转为北京时间
+            const utcDate = new Date(lastModified);
+            // 转为北京时间（UTC+8），并格式化
+            const beijingTime = new Date(utcDate.getTime() + 8 * 60 * 60 * 1000);
+            updateTimeStr = beijingTime.toLocaleString('zh-CN', { hour12: false });
+        }
+        // 解析CSV数据
+        const records = parseCSV(text);
+        return { records, updateTime: updateTimeStr };
     } catch (error) {
         console.error('加载失败:', error);
         return { error: error.message };
@@ -268,9 +210,7 @@ async function fetchWeatherData() {
 function parseCSV(text) {
     const lines = text.trim().split('\n');
     if (lines.length < 2) return [];
-    
     const headers = lines[0].split('\t').map(h => h.trim());
-    
     const records = [];
     for (let i = lines.length - 1; i >= 1; i--) {
         const cols = lines[i].split('\t').map(c => c.trim());
@@ -284,35 +224,27 @@ function parseCSV(text) {
     return records;
 }
 
-function renderTable(records) {
+function renderTable(records, updateTime) {
     const tbody = document.getElementById('tableBody');
     const stats = document.getElementById('stats');
+    const updateInfo = document.getElementById('updateInfo');
     
+    // 更新时间显示
+    if (updateTime && updateTime !== '未知时间') {
+        updateInfo.textContent = `数据更新于 ${updateTime}`;
+    } else if (updateTime === '未知时间') {
+        updateInfo.textContent = '数据更新时间：无法获取（请检查文件）';
+    } else {
+        updateInfo.textContent = `更新于 ${new Date().toLocaleString('zh-CN')}`;
+    }
+
     if (records && records.error) {
-        tbody.innerHTML = `
-            <tr><td colspan="12">
-                <div class="error">
-                    <div class="icon">⚠️</div>
-                    <div>加载失败：${records.error}</div>
-                    <div style="font-size:13px;margin-top:8px;color:#7a8a9e;">
-                        请确认 <code>weather.csv</code> 文件存在，且路径配置正确
-                    </div>
-                </div>
-            </td></tr>
-        `;
+        tbody.innerHTML = `<tr><td colspan="12"><div class="error"><div class="icon">⚠️</div><div>加载失败：${records.error}</div></div></td></tr>`;
         stats.innerHTML = '';
         return;
     }
-    
     if (!records || records.length === 0) {
-        tbody.innerHTML = `
-            <tr><td colspan="12">
-                <div class="empty">
-                    <div class="icon">🌤️</div>
-                    暂无数据，等待首次归档...
-                </div>
-            </td></tr>
-        `;
+        tbody.innerHTML = `<tr><td colspan="12"><div class="empty"><div class="icon">🌤️</div>暂无数据，等待首次归档...</div></td></tr>`;
         stats.innerHTML = '';
         return;
     }
@@ -321,22 +253,20 @@ function renderTable(records) {
     tbody.innerHTML = records.map(r => {
         const weatherText = r['天气状况'] || '-';
         const weatherClass = getWeatherClass(weatherText);
-        return `
-            <tr>
-                <td>${r['公历日期'] || '-'}</td>
-                <td>${r['农历日期'] || '-'}</td>
-                <td>${r['城市'] || '-'}</td>
-                <td>${r['最高气温(℃)'] || '-'}</td>
-                <td>${r['最低气温(℃)'] || '-'}</td>
-                <td>${r['日出时间'] || '-'}</td>
-                <td>${r['日落时间'] || '-'}</td>
-                <td><span class="weather-tag ${weatherClass}">${weatherText}</span></td>
-                <td>${r['降水量(mm)'] || '-'}</td>
-                <td>${r['最大风速(km/h)'] || '-'}</td>
-                <td>${r['平均相对湿度(%)'] || '-'}</td>
-                <td>${r['气压(hPa)'] || '-'}</td>
-            </tr>
-        `;
+        return `<tr>
+            <td>${r['公历日期'] || '-'}</td>
+            <td>${r['农历日期'] || '-'}</td>
+            <td>${r['城市'] || '-'}</td>
+            <td>${r['最高气温(℃)'] || '-'}</td>
+            <td>${r['最低气温(℃)'] || '-'}</td>
+            <td>${r['日出时间'] || '-'}</td>
+            <td>${r['日落时间'] || '-'}</td>
+            <td><span class="weather-tag ${weatherClass}">${weatherText}</span></td>
+            <td>${r['降水量(mm)'] || '-'}</td>
+            <td>${r['最大风速(km/h)'] || '-'}</td>
+            <td>${r['平均相对湿度(%)'] || '-'}</td>
+            <td>${r['气压(hPa)'] || '-'}</td>
+        </tr>`;
     }).join('');
     
     // 统计信息
@@ -346,26 +276,26 @@ function renderTable(records) {
         <span>📅 最新：${latest['公历日期'] || '未知'}</span>
         <span>📋 共 ${total} 条记录</span>
         <span>🏙️ ${latest['城市'] || '伊川县'}</span>
-        <span>📆 数据跨度：${records[records.length - 1]?.['公历日期'] || '未知'} ~ ${latest['公历日期'] || '未知'}</span>
+        <span>📆 数据跨度：${records[records.length-1]?.['公历日期'] || '未知'} ~ ${latest['公历日期'] || '未知'}</span>
     `;
 }
 
 async function loadData() {
     const tbody = document.getElementById('tableBody');
-    const updateInfo = document.getElementById('updateInfo');
     const refreshBtn = document.getElementById('refreshBtn');
-    
     refreshBtn.disabled = true;
     refreshBtn.textContent = '⏳ 加载中...';
-    updateInfo.textContent = '加载中...';
-    
-    // 显示加载状态
     tbody.innerHTML = `<tr><td colspan="12" class="loading"><span class="spinner"></span>加载数据中</td></tr>`;
     
-    const records = await fetchWeatherData();
-    renderTable(records);
+    const result = await fetchWeatherData();
+    // 如果获取成功，result.records 是数组，result.updateTime 是字符串
+    // 如果失败，result.error 是字符串
+    if (result.error) {
+        renderTable({ error: result.error }, null);
+    } else {
+        renderTable(result.records, result.updateTime);
+    }
     
-    updateInfo.textContent = `更新于 ${new Date().toLocaleString('zh-CN')}`;
     refreshBtn.disabled = false;
     refreshBtn.textContent = '🔄 刷新数据';
 }
