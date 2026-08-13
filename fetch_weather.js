@@ -116,7 +116,7 @@ async function main() {
       precip: daily.precipitation_sum[0] ?? '0.0',
       windSpeed: daily.wind_speed_10m_max[0] ?? '-',
       humidity: daily.relative_humidity_2m_mean[0] ?? '-',
-      pressure: daily.pressure_msl_mean[0] ?? '-'
+      pressure: daily.pressure_msl_mean[0] ?? '-',
       fetchTime: new Date().toLocaleString('zh-CN', { timeZone: 'Asia/Shanghai' })
     };
     
