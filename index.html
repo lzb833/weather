@@ -132,26 +132,27 @@
     <div class="subtitle">
         <span>数据来源：<a href="https://open-meteo.com" target="_blank" style="color:#3b82f6;text-decoration:none;">Open-Meteo</a> · 每日凌晨自动归档</span>
         <button class="refresh-btn" id="refreshBtn">🔄 刷新数据</button>
+        <span>单位：气温(℃)     降水(mm)     风速(km/h)     湿度(%)     气压(hPa)</span>
     </div>
     <div class="table-wrapper">
         <table>
-            <thead>
-                <tr>
-                    <th>公历日期</th>
-                    <th>农历日期</th>
-                    <th>城市</th>
-                    <th>最高气温(℃)</th>
-                    <th>最低气温(℃)</th>
-                    <th>日出时间</th>
-                    <th>日落时间</th>
-                    <th>天气状况</th>
-                    <th>降水量(mm)</th>
-                    <th>最大风速(km/h)</th>
-                    <th>平均相对湿度(%)</th>
-                    <th>气压(hPa)</th>
-                    <th>获取时间</th>
-                </tr>
-            </thead>
+<thead>
+    <tr>
+        <th>日期</th>
+        <th>农历</th>
+        <th>城市</th>
+        <th>最高温</th>
+        <th>最低温</th>
+        <th>日出</th>
+        <th>日落</th>
+        <th>天气</th>
+        <th>降水</th>
+        <th>风速</th>
+        <th>湿度</th>
+        <th>气压</th>
+        <th>获取时间</th>
+    </tr>
+</thead>
             <tbody id="tableBody">
                 <tr><td colspan="12" class="loading"><span class="spinner"></span>加载数据中</td></tr>
             </tbody>
@@ -248,25 +249,25 @@ function renderTable(records, updateTime) {
     }
     
     // 渲染表格
-    tbody.innerHTML = records.map(r => {
-        const weatherText = r['天气状况'] || '-';
-        const weatherClass = getWeatherClass(weatherText);
-        return `<tr>
-            <td>${r['公历日期'] || '-'}</td>
-            <td>${r['农历日期'] || '-'}</td>
-            <td>${r['城市'] || '-'}</td>
-            <td>${r['最高气温(℃)'] || '-'}</td>
-            <td>${r['最低气温(℃)'] || '-'}</td>
-            <td>${r['日出时间'] || '-'}</td>
-            <td>${r['日落时间'] || '-'}</td>
-            <td><span class="weather-tag ${weatherClass}">${weatherText}</span></td>
-            <td>${r['降水量(mm)'] || '-'}</td>
-            <td>${r['最大风速(km/h)'] || '-'}</td>
-            <td>${r['平均相对湿度(%)'] || '-'}</td>
-            <td>${r['气压(hPa)'] || '-'}</td>
-            <td>${r['获取时间'] || '-'}</td>
-        </tr>`;
-    }).join('');
+tbody.innerHTML = records.map(r => {
+    const weatherText = r['天气'] || '-';
+    const weatherClass = getWeatherClass(weatherText);
+    return `<tr>
+        <td>${r['日期'] || '-'}</td>
+        <td>${r['农历'] || '-'}</td>
+        <td>${r['城市'] || '-'}</td>
+        <td>${r['最高温'] || '-'}</td>
+        <td>${r['最低温'] || '-'}</td>
+        <td>${r['日出'] || '-'}</td>
+        <td>${r['日落'] || '-'}</td>
+        <td><span class="weather-tag ${weatherClass}">${weatherText}</span></td>
+        <td>${r['降水'] || '-'}</td>
+        <td>${r['风速'] || '-'}</td>
+        <td>${r['湿度'] || '-'}</td>
+        <td>${r['气压'] || '-'}</td>
+        <td>${r['获取时间'] || '-'}</td>
+    </tr>`;
+}).join('');
     
     // 统计信息
     const latest = records[0];
