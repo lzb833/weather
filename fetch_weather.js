@@ -117,6 +117,7 @@ async function main() {
       windSpeed: daily.wind_speed_10m_max[0] ?? '-',
       humidity: daily.relative_humidity_2m_mean[0] ?? '-',
       pressure: daily.pressure_msl_mean[0] ?? '-'
+      fetchTime: new Date().toLocaleString('zh-CN', { timeZone: 'Asia/Shanghai' })
     };
     
     // ----- 5. 写入CSV -----
@@ -126,13 +127,15 @@ async function main() {
       record.sunrise, record.sunset,
       record.weather, record.precip,
       record.windSpeed, record.humidity, record.pressure
+      record.fetchTime
     ].join('\t');
     
     if (!fs.existsSync('weather.csv')) {
       const header = [
         '公历日期', '农历日期', '城市', '最高气温(℃)', '最低气温(℃)',
         '日出时间', '日落时间', '天气状况', '降水量(mm)',
-        '最大风速(km/h)', '平均相对湿度(%)', '气压(hPa)'
+        '最大风速(km/h)', '平均相对湿度(%)', '气压(hPa)',
+        '获取时间'
       ].join('\t');
       fs.writeFileSync('weather.csv', header + '\n');
     }
