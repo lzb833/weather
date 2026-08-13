@@ -126,7 +126,7 @@ async function main() {
       record.maxTemp, record.minTemp,
       record.sunrise, record.sunset,
       record.weather, record.precip,
-      record.windSpeed, record.humidity, record.pressure
+      record.windSpeed, record.humidity, record.pressure,
       record.fetchTime
     ].join('\t');
     
