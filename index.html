@@ -149,6 +149,7 @@
                     <th>最大风速(km/h)</th>
                     <th>平均相对湿度(%)</th>
                     <th>气压(hPa)</th>
+                    <th>获取时间</th>
                 </tr>
             </thead>
             <tbody id="tableBody">
@@ -192,16 +193,13 @@ async function fetchWeatherData() {
         const lastModified = response.headers.get('last-modified');
         let updateTimeStr = '未知时间';
         if (lastModified) {
-            // 将服务器返回的GMT时间转为北京时间
-            const utcDate = new Date(lastModified);
-            // 转为北京时间（UTC+8），并格式化
-            const beijingTime = new Date(utcDate.getTime() + 8 * 60 * 60 * 1000);
+            const beijingTime = new Date(lastModified);
             updateTimeStr = beijingTime.toLocaleString('zh-CN', { hour12: false });
         }
         // 解析CSV数据
         const records = parseCSV(text);
         return { records, updateTime: updateTimeStr };
-    } catch (error) {
+        } catch (error) {
         console.error('加载失败:', error);
         return { error: error.message };
     }
@@ -266,6 +264,7 @@ function renderTable(records, updateTime) {
             <td>${r['最大风速(km/h)'] || '-'}</td>
             <td>${r['平均相对湿度(%)'] || '-'}</td>
             <td>${r['气压(hPa)'] || '-'}</td>
+            <td>${r['获取时间'] || '-'}</td>
         </tr>`;
     }).join('');
     
@@ -285,7 +284,7 @@ async function loadData() {
     const refreshBtn = document.getElementById('refreshBtn');
     refreshBtn.disabled = true;
     refreshBtn.textContent = '⏳ 加载中...';
-    tbody.innerHTML = `<tr><td colspan="12" class="loading"><span class="spinner"></span>加载数据中</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="13" class="loading"><span class="spinner"></span>加载数据中</td></tr>`;
     
     const result = await fetchWeatherData();
     // 如果获取成功，result.records 是数组，result.updateTime 是字符串
