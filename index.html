@@ -272,10 +272,10 @@ tbody.innerHTML = records.map(r => {
     const latest = records[0];
     const total = records.length;
     stats.innerHTML = `
-        <span>📅 最新：${latest['公历日期'] || '未知'}</span>
+        <span>📅 最新：${latest['日期'] || '未知'}</span>
         <span>📋 共 ${total} 条记录</span>
         <span>🏙️ ${latest['城市'] || '伊川县'}</span>
-        <span>📆 数据跨度：${records[records.length-1]?.['公历日期'] || '未知'} ~ ${latest['公历日期'] || '未知'}</span>
+        <span>📆 数据跨度：${records[records.length-1]?.['日期'] || '未知'} ~ ${latest['日期'] || '未知'}</span>
         <br/><span>单位：气温(℃)     降水(mm)     风速(km/h)     湿度(%)     气压(hPa)</span>
     `;
 }
