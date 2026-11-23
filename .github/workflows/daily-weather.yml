@@ -1,20 +1,14 @@
 name: 每日天气归档
 
 on:
-  # GitHub 自带的 schedule 是"尽力而为"，高峰期会被排队数小时才执行，
-  # 这里仅作为兜底：真正的准点触发来自外部定时器调用 workflow_dispatch。
   schedule:
-    - cron: '0 22 * * *'  # UTC 22:00 = 北京时间 06:00（实际会延迟，请勿依赖）
+    - cron: '0 22 * * *'  # UTC 22:00 = 北京时间 06:00
   workflow_dispatch:
-
-# 避免兜底 cron 与外部触发同时跑，导致 git push 冲突
-concurrency:
-  group: daily-weather
-  cancel-in-progress: false
 
 jobs:
   archive:
     runs-on: ubuntu-latest
+    # 关键修复：在这里明确授予写入权限
     permissions:
       contents: write
     steps:
@@ -33,7 +27,6 @@ jobs:
         run: |
           git config user.name "lzb833"
           git config user.email "314553550+lzb833@users.noreply.github.com"
-          TODAY=$(TZ='Asia/Shanghai' date '+%F')
           git add weather.csv
-          git commit -m "📊 追加 ${TODAY} 天气数据" || echo "无变化"
+          git commit -m "📊 追加 $(date -u '+%Y-%m-%d') 天气数据" || echo "无变化"
           git push
