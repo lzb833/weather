@@ -8,21 +8,17 @@ on:
 jobs:
   archive:
     runs-on: ubuntu-latest
-    # 关键修复：在这里明确授予写入权限
-    permissions:
-      contents: write
     steps:
       - uses: actions/checkout@v4
-
+      
       - uses: actions/setup-node@v4
         with:
           node-version: '18'
-
+      
       - run: npm install
-
+      
       - name: 抓取天气数据
         run: node fetch_weather.js
-
       - name: 提交并推送
         run: |
           git config user.name "lzb833"
