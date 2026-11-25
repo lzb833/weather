@@ -25,6 +25,7 @@ jobs:
         run: |
           git config user.name "lzb833"
           git config user.email "314553550+lzb833@users.noreply.github.com"
+          git remote set-url origin https://x-access-token:${{ secrets.PAT_TOKEN }}@github.com/${{ github.repository }}
           git add weather.csv
           git commit -m "📊 追加 $(date -u '+%Y-%m-%d') 天气数据" || echo "无变化"
           git push
